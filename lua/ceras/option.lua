@@ -44,6 +44,8 @@ vim.opt.confirm = true
 vim.opt.isfname:append("@-@")
 vim.opt.path:append("**")
 
+vim.opt.diffopt:append({ "vertical", "linematch:60", "algorithm:histogram" })
+
 -- Auto-generated files
 vim.opt.swapfile = false
 vim.opt.writebackup = false
