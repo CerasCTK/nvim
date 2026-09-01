@@ -36,6 +36,8 @@ if vim.g.ui2_enabled == true then
     vim.opt.cmdheight = 0
 end
 
+vim.opt.wildmode = "longest:full,full"
+
 -- Editor and file behaviors
 vim.opt.confirm = true
 
