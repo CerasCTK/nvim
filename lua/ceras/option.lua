@@ -51,3 +51,6 @@ vim.opt.smartcase = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.splitkeep = "screen"
+
+-- Select behaviors
+vim.opt.virtualedit = "block"
