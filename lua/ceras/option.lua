@@ -44,3 +44,8 @@ vim.opt.shiftround = true
 -- Search behaviors
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
+-- Split behaviors
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.splitkeep = "screen"
