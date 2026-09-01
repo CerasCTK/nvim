@@ -26,6 +26,8 @@ vim.opt.signcolumn = "yes"
 vim.opt.pumheight = 15
 vim.opt.pumblend = 10
 
+vim.opt.winblend = 0
+
 -- Auto-generated files
 vim.opt.swapfile = false
 vim.opt.writebackup = false
