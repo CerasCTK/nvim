@@ -30,6 +30,14 @@ vim.opt.winblend = 0
 
 vim.opt.laststatus = 3
 
+vim.opt.synmaxcol = 300
+
+-- Editor and file behaviors
+vim.opt.confirm = true
+
+vim.opt.isfname:append("@-@")
+vim.opt.path:append("**")
+
 -- Auto-generated files
 vim.opt.swapfile = false
 vim.opt.writebackup = false
@@ -53,11 +61,6 @@ vim.opt.shiftround = true
 -- Search behaviors
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
-vim.opt.synmaxcol = 300
-
-vim.opt.isfname:append("@-@")
-vim.opt.path:append("**")
 
 -- Split behaviors
 vim.opt.splitbelow = true
