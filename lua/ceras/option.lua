@@ -21,6 +21,8 @@ vim.opt.fillchars = {
     eob = " "
 }
 
+vim.opt.signcolumn = "yes"
+
 -- Auto-generated files
 vim.opt.swapfile = false
 vim.opt.writebackup = false
