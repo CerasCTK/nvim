@@ -46,6 +46,7 @@ vim.opt.shiftround = true
 -- Search behaviors
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.synmaxcol = 300
 
 -- Split behaviors
 vim.opt.splitbelow = true
