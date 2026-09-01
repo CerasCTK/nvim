@@ -40,3 +40,7 @@ vim.opt.smartindent = true
 
 vim.opt.shiftwidth = 4
 vim.opt.shiftround = true
+
+-- Search behaviors
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
