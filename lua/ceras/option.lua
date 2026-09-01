@@ -46,7 +46,11 @@ vim.opt.shiftround = true
 -- Search behaviors
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
 vim.opt.synmaxcol = 300
+
+vim.opt.isfname:append("@-@")
+vim.opt.path:append("**")
 
 -- Split behaviors
 vim.opt.splitbelow = true
@@ -55,3 +59,7 @@ vim.opt.splitkeep = "screen"
 
 -- Select behaviors
 vim.opt.virtualedit = "block"
+vim.opt.iskeyword:append("-")
+
+-- System clipboard integration
+vim.opt.clipboard:append("unnamedplus")
