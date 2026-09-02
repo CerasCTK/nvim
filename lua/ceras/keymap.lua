@@ -115,3 +115,7 @@ vim.keymap.set("n", "<c-up>", "<cmd>resize +2<cr>", { desc = "Increase window he
 vim.keymap.set("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 vim.keymap.set("n", "<c-left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 vim.keymap.set("n", "<c-right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+
+vim.keymap.set("i", ",", ",<c-g>u", { desc = "Add undo breakpoint at comma" })
+vim.keymap.set("i", ".", ".<c-g>u", { desc = "Add undo breakpoint at period" })
+vim.keymap.set("i", ";", ";<c-g>u", { desc = "Add undo breakpoint at semicolon" })
