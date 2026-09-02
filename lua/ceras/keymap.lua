@@ -64,3 +64,6 @@ vim.keymap.set("n", "{", "{zz", { desc = "Jump to previous paragraph and center 
 vim.keymap.set("n", "}", "}zz", { desc = "Jump to next paragraph and center cursor" })
 
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines without moving cursor" })
+
+vim.keymap.set("v", ">", ">gv", { desc = "Indent and maintain visual selection" })
+vim.keymap.set("v", "<", "<gv", { desc = "Outdent and maintain visual selection" })
