@@ -38,3 +38,22 @@ vim.keymap.set(
 
 vim.keymap.set("x", "<leader>p", "\"_dP", { desc = "Paste without yanking" })
 vim.keymap.set({ "n", "v" }, "<leader>d", "\"_d", { desc = "Delete without yanking" })
+
+vim.keymap.set(
+    { "n", "x", "o" },
+    "n",
+    function()
+        local cmd = vim.v.searchforward == 1 and "n" or "N"
+        return vim.api.nvim_get_mode().mode == "n" and (cmd .. "zzzv") or cmd
+    end,
+    { desc = "Next search match (centered in normal)", expr = true }
+)
+vim.keymap.set(
+    { "n", "x", "o" },
+    "N",
+    function()
+        local cmd = vim.v.searchforward == 1 and "N" or "n"
+        return vim.api.nvim_get_mode().mode == "n" and (cmd .. "zzzv") or cmd
+    end,
+    { desc = "Previous search match (centered in normal)", expr = true }
+)
