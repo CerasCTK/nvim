@@ -35,3 +35,6 @@ vim.keymap.set(
     end,
     { desc = "Move up with wrap-aware", expr = true }
 )
+
+vim.keymap.set("x", "<leader>p", "\"_dP", { desc = "Paste without yanking" })
+vim.keymap.set({ "n", "v" }, "<leader>d", "\"_d", { desc = "Delete without yanking" })
