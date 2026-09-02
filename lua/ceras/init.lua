@@ -5,4 +5,5 @@ end
 
 require("ceras.option")
 require("ceras.keymap")
+require("ceras.autocmd")
 require("ceras.plugin")
