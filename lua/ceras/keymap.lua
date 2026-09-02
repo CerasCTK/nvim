@@ -127,3 +127,6 @@ vim.keymap.set("n", "zj", "zcjzOzz", { desc = "Close current fold and move to ne
 vim.keymap.set("n", "zk", "zckzOzz", { desc = "Close current fold and move to previous fold" })
 
 vim.keymap.set("n", "<leader>i", vim.show_pos, { desc = "Show syntax highlight under cursor" })
+
+vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add comment below" })
+vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add comment below" })
