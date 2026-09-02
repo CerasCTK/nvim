@@ -99,3 +99,6 @@ local move_line_for_insert = function(is_go_down)
 end
 vim.keymap.set("i", "<a-j>", move_line_for_insert(true), { desc = "Move current line down" })
 vim.keymap.set("i", "<a-k>", move_line_for_insert(), { desc = "Move current line up" })
+
+vim.keymap.set("n", "<a-h>", "zh", { desc = "Scroll view to the left" })
+vim.ketmap.set("n", "<a-l>", "zl", { desc = "Scroll view to the right" })
