@@ -4,4 +4,5 @@ if vim.fn.has("nvim-0.12") == 1 then
 end
 
 require("ceras.option")
+require("ceras.keymap")
 require("ceras.plugin")
