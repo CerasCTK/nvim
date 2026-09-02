@@ -21,3 +21,36 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         vim.fn.mkdir(parent_directory, "p")
     end,
 })
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+    group = vim.api.nvim_create_augroup("RestoreLastLocation", { clear = true }),
+    desc = "Auto restore last cursor position after buffer displayed in a window",
+    callback = function(args)
+        local excluded_filetypes = { "gitcommit" }
+
+        local bufnr = args.buf
+        local filetype = vim.bo[bufnr].filetype
+
+        local is_excluded = vim.tbl_contains(excluded_filetypes, filetype)
+        local is_restored_last_location = vim.b[bufnr].last_loc_restored
+
+        if is_excluded or is_restored_last_location then
+            return
+        end
+
+        local last_position = vim.api.nvim_buf_get_mark(bufnr, "\"")
+
+        local total_lines = vim.api.nvim_buf_line_count(bufnr)
+
+        local row = last_position[1]
+        local is_valid_position = row > 0 and row <= total_lines
+
+        if is_valid_position then
+            local is_ok, _ = pcall(vim.api.nvim_win_set_cursor, 0, last_position)
+
+            if is_ok then
+                vim.b[bufnr].last_loc_restored = true
+            end
+        end
+    end,
+})
