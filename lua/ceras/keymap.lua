@@ -70,7 +70,32 @@ vim.keymap.set("v", "<", "<gv", { desc = "Outdent and maintain visual selection"
 
 vim.keymap.set("n", "<a-j>", "<cmd>move .+1<cr>==", { desc = "Move current line down" })
 vim.keymap.set("n", "<a-k>", "<cmd>move .-2<cr>==", { desc = "Move current line up" })
-vim.keymap.set("i", "<a-j>", "<esc><cmd>move .+1<cr>==a", { desc = "Move current line down" })
-vim.keymap.set("i", "<a-k>", "<esc><cmd>move .-2<cr>==a", { desc = "Move current line up" })
 vim.keymap.set("x", "<a-j>", ":move '>+1<cr>gv=gv", { desc = "Move current block down" })
 vim.keymap.set("x", "<a-k>", ":move '<-2<cr>gv=gv", { desc = "Move current block up" })
+local move_line_for_insert = function(is_go_down)
+    return function()
+        local pos = vim.api.nvim_win_get_cursor(0)
+        local row, col = pos[1], pos[2]
+
+        local total_lines = vim.api.nvim_buf_line_count(0)
+
+        local step = is_go_down and 1 or -1
+        local move_cmd = is_go_down and "move .+1" or "move .-2"
+
+        if is_go_down and row >= total_lines then return end
+        if not is_go_down and row <= 1 then return end
+
+        local old_indent = #vim.fn.matchstr(vim.fn.getline(row), [[^\s*]])
+
+        vim.cmd(move_cmd)
+        vim.cmd("normal! ==")
+
+        local new_indent = #vim.fn.matchstr(vim.fn.getline(row + 1), [[^\s*]])
+
+        local new_col = col + (new_indent - old_indent)
+
+        vim.api.nvim_win_set_cursor(0, { row + step, math.max(0, new_col) })
+    end
+end
+vim.keymap.set("i", "<a-j>", move_line_for_insert(true), { desc = "Move current line down" })
+vim.keymap.set("i", "<a-k>", move_line_for_insert(), { desc = "Move current line up" })
