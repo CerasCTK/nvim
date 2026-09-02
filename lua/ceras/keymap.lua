@@ -125,3 +125,5 @@ vim.keymap.set("n", "<leader>tw", "<cmd>set wrap!<cr>", { desc = "Toggle wrap" }
 vim.keymap.set("n", "zv", "zMzvzz", { desc = "Focus current fold and close all others" })
 vim.keymap.set("n", "zj", "zcjzOzz", { desc = "Close current fold and move to next fold" })
 vim.keymap.set("n", "zk", "zckzOzz", { desc = "Close current fold and move to previous fold" })
+
+vim.keymap.set("n", "<leader>i", vim.show_pos, { desc = "Show syntax highlight under cursor" })
