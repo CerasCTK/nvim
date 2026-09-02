@@ -9,3 +9,5 @@ vim.keymap.set(
     "<esc>ggVG",
     { desc = "Select all content in current buffer" }
 )
+
+vim.keymap.set("n", "<esc>", "<cmd>noh<cr>", { desc = "Clear highlight search result" })
