@@ -110,3 +110,8 @@ vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "Go to left window" })
 vim.keymap.set("n", "<c-j>", "<c-w>j", { desc = "Go to lower window" })
 vim.keymap.set("n", "<c-k>", "<c-w>k", { desc = "Go to upper window" })
 vim.keymap.set("n", "<c-l>", "<c-w>l", { desc = "Go to right window" })
+
+vim.keymap.set("n", "<c-up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+vim.keymap.set("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<c-left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<c-right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
