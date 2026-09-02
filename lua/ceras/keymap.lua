@@ -62,3 +62,5 @@ vim.keymap.set("n", "<c-d>", "<c-d>zz", { desc = "Scroll down half page and cent
 vim.keymap.set("n", "<c-u>", "<c-u>zz", { desc = "Scroll up half page and center cursor" })
 vim.keymap.set("n", "{", "{zz", { desc = "Jump to previous paragraph and center cursor" })
 vim.keymap.set("n", "}", "}zz", { desc = "Jump to next paragraph and center cursor" })
+
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines without moving cursor" })
