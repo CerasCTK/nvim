@@ -119,3 +119,5 @@ vim.keymap.set("n", "<c-right>", "<cmd>vertical resize +2<cr>", { desc = "Increa
 vim.keymap.set("i", ",", ",<c-g>u", { desc = "Add undo breakpoint at comma" })
 vim.keymap.set("i", ".", ".<c-g>u", { desc = "Add undo breakpoint at period" })
 vim.keymap.set("i", ";", ";<c-g>u", { desc = "Add undo breakpoint at semicolon" })
+
+vim.keymap.set("n", "<leader>tw", "<cmd>set wrap!<cr>", { desc = "Toggle wrap" })
