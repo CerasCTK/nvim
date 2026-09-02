@@ -67,3 +67,10 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines without moving cursor" })
 
 vim.keymap.set("v", ">", ">gv", { desc = "Indent and maintain visual selection" })
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent and maintain visual selection" })
+
+vim.keymap.set("n", "<a-j>", "<cmd>move .+1<cr>==", { desc = "Move current line down" })
+vim.keymap.set("n", "<a-k>", "<cmd>move .-2<cr>==", { desc = "Move current line up" })
+vim.keymap.set("i", "<a-j>", "<esc><cmd>move .+1<cr>==a", { desc = "Move current line down" })
+vim.keymap.set("i", "<a-k>", "<esc><cmd>move .-2<cr>==a", { desc = "Move current line up" })
+vim.keymap.set("x", "<a-j>", ":move '>+1<cr>gv=gv", { desc = "Move current block down" })
+vim.keymap.set("x", "<a-k>", ":move '<-2<cr>gv=gv", { desc = "Move current block up" })
