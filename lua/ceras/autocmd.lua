@@ -91,3 +91,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         vim.fn.setpos(".", save_cursor_pos)
     end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("BetterDocument", { clear = true }),
+    desc = "Configure text layout and enable spellcheck for prose and documentation files",
+    pattern = { "markdown", "text", "plaintex", "gitcommit" },
+    callback = function()
+        vim.opt_local.wrap = true
+        vim.opt_local.linebreak = true
+        vim.opt_local.spell = true
+    end,
+})
