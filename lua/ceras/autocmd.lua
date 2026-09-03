@@ -76,3 +76,16 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHo
         end
     end,
 })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    group = vim.api.nvim_create_augroup("TrimWhitespace", { clear = true }),
+    desc = "Automatically trim trailing whitespaces before saving the file",
+    pattern = "*",
+    callback = function()
+        local save_cursor_pos = vim.fn.getpos(".")
+
+        vim.cmd([[%s/\s\+$//e]])
+
+        vim.fn.setpos(".", save_cursor_pos)
+    end,
+})
