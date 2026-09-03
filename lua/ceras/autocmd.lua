@@ -26,6 +26,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     group = vim.api.nvim_create_augroup("RestoreLastLocation", { clear = true }),
     desc = "Auto restore last cursor position after buffer displayed in a window",
     callback = function(args)
+        if vim.o.diff then return end
+
         local excluded_filetypes = { "gitcommit" }
 
         local bufnr = args.buf
