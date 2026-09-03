@@ -66,3 +66,13 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = bufnr, desc = "Close special window" })
     end,
 })
+
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+    group = vim.api.nvim_create_augroup("AutoRead", { clear = true }),
+    desc = "Automatically reload buffers when file changes are detected on disk",
+    callback = function()
+        if vim.o.buftype ~= "nofile" then
+            vim.cmd("checktime")
+        end
+    end,
+})
