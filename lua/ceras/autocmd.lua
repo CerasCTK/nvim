@@ -54,3 +54,15 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         end
     end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("FastCloseWindow", { clear = true }),
+    desc = "Close special windows using 'q' key",
+    pattern = { "help", "man", "qf" },
+    callback = function(args)
+        local bufnr = args.buf
+
+        vim.bo[bufnr].buflisted = false
+        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = bufnr, desc = "Close special window" })
+    end,
+})
