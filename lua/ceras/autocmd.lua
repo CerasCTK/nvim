@@ -102,3 +102,14 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.spell = true
     end,
 })
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("RestoreYankCursor", { clear = true }),
+    desc = "Restore the cursor position back to its pre-yank location immediately after copy text",
+    callback = function()
+        if vim.v.event.operator == "y" and vim.g.cursor_pre_yank then
+            vim.api.nvim_win_set_cursor(0, vim.g.cursor_pre_yank)
+            vim.g.cursor_pre_yank = nil
+        end
+    end,
+})

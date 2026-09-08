@@ -139,3 +139,23 @@ vim.keymap.set(
     end,
     { desc = "Toggle builtin Undotree" }
 )
+
+vim.keymap.set(
+    { "n", "x" },
+    "y",
+    function()
+        vim.g.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+        return "y"
+    end,
+    { desc = "Yank text and cache original cursor position", expr = true }
+)
+
+vim.keymap.set(
+    "n",
+    "Y",
+    function()
+        vim.g.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+        return "yg_"
+    end,
+    { desc = "Yank to the last non-blank character of the line and cache cursor", expr = true }
+)
