@@ -11,6 +11,15 @@ if vim.fn.has("nvim-0.12") == 1 then
         end,
         { desc = "Toggle builtin Undotree" }
     )
+
+    vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("SetupUndoTree", { clear = true }),
+        desc = "Configure for native UndoTree",
+        pattern = "nvim-undotree",
+        callback = function(args)
+            vim.opt_local.foldenable = false
+        end,
+    })
 end
 
 vim.cmd("syntax off")
