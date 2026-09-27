@@ -1,6 +1,16 @@
 if vim.fn.has("nvim-0.12") == 1 then
     vim.cmd.packadd("nvim.difftool")
+
     vim.cmd.packadd("nvim.undotree")
+
+    vim.keymap.set(
+        "n",
+        "<leader>eu",
+        function()
+            require("undotree").open({ title = "UndoTree" })
+        end,
+        { desc = "Toggle builtin Undotree" }
+    )
 end
 
 vim.cmd("syntax off")

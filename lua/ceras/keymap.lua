@@ -132,15 +132,6 @@ vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = 
 vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add comment below" })
 
 vim.keymap.set(
-    "n",
-    "<leader>eu",
-    function()
-        require("undotree").open({ title = "UndoTree" })
-    end,
-    { desc = "Toggle builtin Undotree" }
-)
-
-vim.keymap.set(
     { "n", "x" },
     "y",
     function()
