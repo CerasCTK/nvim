@@ -32,6 +32,10 @@ vim.opt.laststatus = 3
 
 vim.opt.synmaxcol = 300
 
+if vim.g.ui2_enabled == true then
+    vim.opt.cmdheight = 0
+end
+
 -- Editor and file behaviors
 vim.opt.confirm = true
 
