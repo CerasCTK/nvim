@@ -72,18 +72,30 @@ vim.keymap.set("n", "<a-j>", "<cmd>move .+1<cr>==", { desc = "Move current line 
 vim.keymap.set("n", "<a-k>", "<cmd>move .-2<cr>==", { desc = "Move current line up" })
 vim.keymap.set("x", "<a-j>", ":move '>+1<cr>gv=gv", { desc = "Move current block down" })
 vim.keymap.set("x", "<a-k>", ":move '<-2<cr>gv=gv", { desc = "Move current block up" })
+
+local can_move_lines = function(first_row, last_row, is_go_down)
+    local total_lines = vim.api.nvim_buf_line_count(0)
+
+    if (is_go_down and last_row >= total_lines)
+        or (not is_go_down and first_row <= 1)
+    then
+        vim.notify("Cannot move beyond buffer boundaries", vim.log.levels.WARN, { title = "Line movement" })
+
+        return false
+    end
+
+    return true
+end
+
 local move_line_for_insert = function(is_go_down)
     return function()
         local pos = vim.api.nvim_win_get_cursor(0)
         local row, col = pos[1], pos[2]
 
-        local total_lines = vim.api.nvim_buf_line_count(0)
+        if not can_move_lines(row, row, is_go_down) then return end
 
         local step = is_go_down and 1 or -1
         local move_cmd = is_go_down and "move .+1" or "move .-2"
-
-        if is_go_down and row >= total_lines then return end
-        if not is_go_down and row <= 1 then return end
 
         local old_indent = #vim.fn.matchstr(vim.fn.getline(row), [[^\s*]])
 
