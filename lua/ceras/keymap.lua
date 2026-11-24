@@ -68,8 +68,6 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines without moving cursor" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent and maintain visual selection" })
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent and maintain visual selection" })
 
-vim.keymap.set("n", "<a-j>", "<cmd>move .+1<cr>==", { desc = "Move current line down" })
-vim.keymap.set("n", "<a-k>", "<cmd>move .-2<cr>==", { desc = "Move current line up" })
 vim.keymap.set("x", "<a-j>", ":move '>+1<cr>gv=gv", { desc = "Move current block down" })
 vim.keymap.set("x", "<a-k>", ":move '<-2<cr>gv=gv", { desc = "Move current block up" })
 
@@ -86,6 +84,21 @@ local can_move_lines = function(first_row, last_row, is_go_down)
 
     return true
 end
+
+local move_line_for_normal = function(is_go_down)
+    return function()
+        local row = vim.api.nvim_win_get_cursor(0)[1]
+
+        if not can_move_lines(row, row, is_go_down) then return end
+
+        local move_cmd = is_go_down and "move .+1" or "move .-2"
+
+        vim.cmd(move_cmd)
+        vim.cmd("normal! ==")
+    end
+end
+vim.keymap.set("n", "<a-j>", move_line_for_normal(true), { desc = "Move current line down" })
+vim.keymap.set("n", "<a-k>", move_line_for_normal(), { desc = "Move current line up" })
 
 local move_line_for_insert = function(is_go_down)
     return function()
