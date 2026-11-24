@@ -90,7 +90,7 @@ local move_line_for_insert = function(is_go_down)
         vim.cmd(move_cmd)
         vim.cmd("normal! ==")
 
-        local new_indent = #vim.fn.matchstr(vim.fn.getline(row + 1), [[^\s*]])
+        local new_indent = #vim.fn.matchstr(vim.fn.getline(row + step), [[^\s*]])
 
         local new_col = col + (new_indent - old_indent)
 
