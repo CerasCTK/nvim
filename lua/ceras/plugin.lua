@@ -19,6 +19,7 @@ if vim.fn.has("nvim-0.12") == 1 then
             vim.opt_local.foldenable = false
 
             vim.keymap.set("n", "q", undotree.cancel, { buffer = bufnr, desc = "Cancel undo selection and close UndoTree" })
+            vim.keymap.set("n", "<cr>", undotree.confirm, { buffer = bufnr, desc = "Confirm undo selection" })
         end,
     })
 end
