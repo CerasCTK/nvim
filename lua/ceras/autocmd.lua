@@ -154,29 +154,34 @@ vim.api.nvim_create_autocmd({ "InsertEnter", "WinLeave" }, {
 vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
     group = vim.api.nvim_create_augroup("ScrollEndOfFile", { clear = true }),
     desc = "Fix scrolloff when you are at the end of file",
-    callback = function()
-        local is_floating_window = vim.api.nvim_win_get_config(0).relative ~= ""
-        local is_non_file_buffer = vim.bo.buftype ~= ""
+    callback = function(args)
+        local bufnr = args.buf
 
-        if is_floating_window or is_non_file_buffer then return end
+        local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
+        if is_non_file_buffer then return end
 
         local current_row = vim.api.nvim_win_get_cursor(0)[1]
-        local total_lines = vim.api.nvim_buf_line_count(0)
-        local win_height = vim.fn.winheight(0)
+        local total_lines = vim.api.nvim_buf_line_count(bufnr)
 
+        local configured_scrolloff = vim.o.scrolloff
+
+        if configured_scrolloff == 0 then return end
+        if total_lines - current_row > configured_scrolloff then return end
+
+        local is_floating_window = vim.api.nvim_win_get_config(0).relative ~= ""
+        if is_floating_window then return end
+
+        local win_height = vim.fn.winheight(0)
         if total_lines <= win_height then return end
 
-        local scrolloff = math.min(vim.o.scrolloff, math.floor(win_height / 2))
+        local scrolloff = math.min(configured_scrolloff, math.floor(win_height / 2))
+        if total_lines - current_row > scrolloff then return end
 
-        if total_lines - current_row <= scrolloff then
-            local visual_distance_to_eof = win_height - vim.fn.winline()
+        local visual_distance_to_eof = win_height - vim.fn.winline()
+        if visual_distance_to_eof >= scrolloff then return end
 
-            if visual_distance_to_eof < scrolloff then
-                local win_view = vim.fn.winsaveview()
-
-                vim.fn.winrestview({ topline = win_view.topline + scrolloff - visual_distance_to_eof })
-            end
-        end
+        local win_view = vim.fn.winsaveview()
+        vim.fn.winrestview({ topline = win_view.topline + scrolloff - visual_distance_to_eof })
     end,
 })
 
