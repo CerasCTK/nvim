@@ -94,6 +94,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         if vim.bo[bufnr].buftype ~= "" then return end
         if not vim.bo[bufnr].modifiable then return end
 
+        local editorconfig = vim.b[bufnr].editorconfig
+        local has_trim_rule = type(editorconfig) == "table" and editorconfig.trim_trailing_whitespace ~= nil
+
+        if has_trim_rule then return end
+
         local excluded_filetypes = { "markdown" }
 
         if vim.tbl_contains(excluded_filetypes, vim.bo[bufnr].filetype) then return end
