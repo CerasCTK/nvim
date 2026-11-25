@@ -112,6 +112,37 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true }),
+    desc = "Enable Tree-sitter highlighting for supported filetypes",
+    callback = function(args)
+        local bufnr = args.buf
+
+        local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
+        if is_non_file_buffer then return end
+
+        local filetype = vim.bo[bufnr].filetype
+        local lang = vim.treesitter.language.get_lang(filetype)
+
+        if not lang then return end
+
+        local is_parser_available = vim.treesitter.language.add(lang)
+        if not is_parser_available then return end
+
+        local is_query_available, query = pcall(vim.treesitter.query.get, lang, "highlights")
+        if not is_query_available or not query then return end
+
+        local is_ok, err = pcall(vim.treesitter.start, bufnr, lang)
+
+        if not is_ok then
+            vim.treesitter.stop(bufnr)
+            vim.bo[bufnr].syntax = filetype
+
+            vim.notify(tostring(err), vim.log.levels.WARN, { title = "Tree-sitter" })
+        end
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("BetterDocument", { clear = true }),
     desc = "Configure text layout and enable spellcheck for prose and documentation files",
     pattern = { "markdown", "text", "plaintex", "gitcommit" },
