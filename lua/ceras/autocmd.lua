@@ -203,7 +203,7 @@ vim.api.nvim_create_autocmd("UILeave", {
     end,
 })
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
     group = vim.api.nvim_create_augroup("AutoProjectRoot", { clear = true }),
     desc = "Automatically update workspace directory",
     callback = function(args)
