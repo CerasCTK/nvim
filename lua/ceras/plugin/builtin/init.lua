@@ -24,8 +24,6 @@ if vim.fn.has("nvim-0.12") == 1 then
     })
 end
 
-vim.cmd("syntax off")
-
 vim.g.loaded_gzip = 1
 vim.g.loaded_tarPlugin = 1
 vim.g.loaded_zipPlugin = 1
