@@ -181,25 +181,41 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 })
 
 local term_bg_group = vim.api.nvim_create_augroup("TerminalBackgroundSync", { clear = true })
+
+local send_terminal_sequence = function(sequence)
+    if vim.api.nvim_ui_send then
+        vim.api.nvim_ui_send(sequence)
+        return
+    end
+
+    for _, ui in ipairs(vim.api.nvim_list_uis()) do
+        if ui.chan == 1 and ui.stdout_tty then
+            io.write(sequence)
+            io.flush()
+            return
+        end
+    end
+end
+
 vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, {
     group = term_bg_group,
     desc = "Synchronize terminal emulator padding background with Neovim colorscheme",
     callback = function()
-        local normal_hl = vim.api.nvim_get_hl(0, { name = "Normal" })
+        local normal_hl = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
 
-        if normal_hl and normal_hl.bg then
-            -- Send OSC 11 escape sequence to dynamically alter the terminal's window background color
-            io.write(string.format("\027]11;#%06x\027\\", normal_hl.bg))
+        if normal_hl.bg then
+            -- OSC 11: Set terminal background color
+            send_terminal_sequence(string.format("\027]11;#%06x\027\\", normal_hl.bg))
         end
     end,
 })
 
-vim.api.nvim_create_autocmd("UILeave", {
+vim.api.nvim_create_autocmd("VimLeavePre", {
     group = term_bg_group,
     desc = "Reset terminal emulator window background to its default theme configuration upon exit",
     callback = function()
-        -- Send OSC 111 escape sequence to restore original terminal background settings
-        io.write("\027]111\027\\")
+        -- OSC 111: Reset terminal background color
+        send_terminal_sequence("\027]111\027\\")
     end,
 })
 
