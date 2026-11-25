@@ -1,8 +1,12 @@
 local M = {}
 
 local default_mode = "auto"
+
 local supported_modes = { "auto", "git", "file", "manual" }
+local selectable_modes = vim.list_extend({ "inherit" }, supported_modes)
+
 local mode_descriptions = {
+    inherit = "Follow project preference or default mode",
     auto = "Nearest project root",
     git = "Git repository root",
     file = "Current file directory",
@@ -119,14 +123,21 @@ M.update = function(bufnr)
 end
 
 M.set_mode = function(mode)
-    if not vim.tbl_contains(supported_modes, mode) then
+    if not vim.tbl_contains(selectable_modes, mode) then
         vim.notify("Invalid workspace mode: " .. tostring(mode), vim.log.levels.WARN, { title = "Workspace" })
         return
     end
 
-    vim.w.workspace_mode = mode
+    if mode == "inherit" then
+        vim.w.workspace_mode = nil
+    else
+        vim.w.workspace_mode = mode
+    end
 
-    if mode == "manual" then
+    local bufnr = vim.api.nvim_get_current_buf()
+    local effective_mode = M.get_mode(bufnr)
+
+    if effective_mode == "manual" then
         vim.notify(
             "Workspace mode: manual\nAutomatic directory switching disabled",
             vim.log.levels.INFO,
@@ -136,7 +147,7 @@ M.set_mode = function(mode)
         return
     end
 
-    local root, err = M.update(vim.api.nvim_get_current_buf())
+    local root, err = M.update(bufnr)
 
     if err then
         vim.notify(
@@ -150,7 +161,7 @@ M.set_mode = function(mode)
 
     if root then
         vim.notify(
-            "Workspace mode: " .. mode .. "\nDirectory: " .. vim.fn.fnamemodify(root, ":~"),
+            "Workspace mode: " .. effective_mode .. "\nDirectory: " .. vim.fn.fnamemodify(root, ":~"),
             vim.log.levels.INFO,
             { title = "Workspace" }
         )
@@ -160,12 +171,21 @@ end
 M.select_mode = function()
     local winid = vim.api.nvim_get_current_win()
 
+    local current_mode = M.get_mode()
+    local selected_mode = vim.w.workspace_mode or "inherit"
+
     vim.ui.select(
-        supported_modes,
+        selectable_modes,
         {
-            prompt = "Select workspace mode (current: " .. M.get_mode() .. ")",
+            prompt = "Select workspace mode (current: " .. current_mode .. ")",
             format_item = function(mode)
-                return mode .. " - " .. mode_descriptions[mode]
+                local label = mode .. " - " .. mode_descriptions[mode]
+
+                if mode == selected_mode then
+                    label = label .. " (selected)"
+                end
+
+                return label
             end,
         },
         function(choice)
