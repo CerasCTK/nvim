@@ -16,10 +16,15 @@ if vim.fn.has("nvim-0.12") == 1 then
 
     vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("SetupUndoTree", { clear = true }),
-        desc = "Configure for native UndoTree",
+        desc = "Configure native UndoTree",
         pattern = "nvim-undotree",
         callback = function(args)
+            local bufnr = args.buf
+
+            vim.bo[bufnr].buflisted = false
             vim.opt_local.foldenable = false
+
+            vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = bufnr, desc = "Close UndoTree" })
         end,
     })
 end
