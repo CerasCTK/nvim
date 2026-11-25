@@ -55,8 +55,13 @@ M.get_mode = function()
 end
 
 M.update = function(bufnr)
-    if vim.bo[bufnr].buftype ~= "" then return end
-    if vim.api.nvim_buf_get_name(bufnr) == "" then return end
+    if vim.bo[bufnr].buftype ~= "" then
+        return nil, "Cannot resolve workspace for special buffers"
+    end
+
+    if vim.api.nvim_buf_get_name(bufnr) == "" then
+        return nil, "Current buffer has no file name"
+    end
 
     local mode = M.get_mode()
 
@@ -72,9 +77,17 @@ M.update = function(bufnr)
         root = M.get_file_directory(bufnr)
     end
 
-    if root and vim.fn.isdirectory(root) == 1 then
-        vim.cmd.lcd(root)
+    if not root then
+        return nil, mode == "git" and "No Git repository found" or "Cannot resolve workspace root"
     end
+
+    if vim.fn.isdirectory(root) ~= 1 then
+        return nil, "Workspace directory does not exist"
+    end
+
+    vim.cmd.lcd(root)
+
+    return root
 end
 
 M.set_mode = function(mode)
@@ -85,7 +98,35 @@ M.set_mode = function(mode)
 
     vim.w.workspace_mode = mode
 
-    M.update(vim.api.nvim_get_current_buf())
+    if mode == "manual" then
+        vim.notify(
+            "Workspace mode: manual\nAutomatic directory switching disabled",
+            vim.log.levels.INFO,
+            { title = "Workspace" }
+        )
+
+        return
+    end
+
+    local root, err = M.update(vim.api.nvim_get_current_buf())
+
+    if err then
+        vim.notify(
+            err .. "\nWorking directory unchanged",
+            vim.log.levels.WARN,
+            { title = "Workspace" }
+        )
+
+        return
+    end
+
+    if root then
+        vim.notify(
+            "Workspace mode: " .. mode .. "\nDirectory: " .. vim.fn.fnamemodify(root, ":~"),
+            vim.log.levels.INFO,
+            { title = "Workspace" }
+        )
+    end
 end
 
 M.select_mode = function()
