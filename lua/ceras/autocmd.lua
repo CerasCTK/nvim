@@ -83,12 +83,21 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     group = vim.api.nvim_create_augroup("TrimWhitespace", { clear = true }),
     desc = "Automatically trim trailing whitespaces before saving the file",
     pattern = "*",
-    callback = function()
-        local save_cursor_pos = vim.fn.getpos(".")
+    callback = function(args)
+        local bufnr = args.buf
 
-        vim.cmd([[%s/\s\+$//e]])
+        if vim.bo[bufnr].buftype ~= "" then return end
+        if not vim.bo[bufnr].modifiable then return end
 
-        vim.fn.setpos(".", save_cursor_pos)
+        local excluded_filetypes = { "markdown" }
+
+        if vim.tbl_contains(excluded_filetypes, vim.bo[bufnr].filetype) then return end
+
+        local saved_view = vim.fn.winsaveview()
+
+        vim.cmd([[keeppatterns %s/\s\+$//e]])
+
+        vim.fn.winrestview(saved_view)
     end,
 })
 
