@@ -1,4 +1,5 @@
 local workspace = require("ceras.core.workspace")
+local treesitter = require("ceras.core.treesitter")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("HighlightYank", { clear = true }),
@@ -117,25 +118,14 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function(args)
         local bufnr = args.buf
 
-        local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
-        if is_non_file_buffer then return end
-
-        local filetype = vim.bo[bufnr].filetype
-        local lang = vim.treesitter.language.get_lang(filetype)
-
+        local lang = treesitter.get_supported_language(bufnr, "highlights")
         if not lang then return end
-
-        local is_parser_available = vim.treesitter.language.add(lang)
-        if not is_parser_available then return end
-
-        local is_query_available, query = pcall(vim.treesitter.query.get, lang, "highlights")
-        if not is_query_available or not query then return end
 
         local is_ok, err = pcall(vim.treesitter.start, bufnr, lang)
 
         if not is_ok then
             vim.treesitter.stop(bufnr)
-            vim.bo[bufnr].syntax = filetype
+            vim.bo[bufnr].syntax = vim.bo[bufnr].filetype
 
             vim.notify(tostring(err), vim.log.levels.WARN, { title = "Tree-sitter" })
         end
@@ -148,19 +138,8 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
     callback = function(args)
         local bufnr = args.buf
 
-        local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
-        if is_non_file_buffer then return end
-
-        local filetype = vim.bo[bufnr].filetype
-        local lang = vim.treesitter.language.get_lang(filetype)
-
+        local lang = treesitter.get_supported_language(bufnr, "folds")
         if not lang then return end
-
-        local is_parser_available = vim.treesitter.language.add(lang)
-        if not is_parser_available then return end
-
-        local is_query_available, query = pcall(vim.treesitter.query.get, lang, "folds")
-        if not is_query_available or not query then return end
 
         local windows = vim.fn.win_findbuf(bufnr)
 
