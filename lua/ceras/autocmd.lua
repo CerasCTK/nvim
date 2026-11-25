@@ -203,17 +203,10 @@ vim.api.nvim_create_autocmd("UILeave", {
     end,
 })
 
-local auto_root_group = vim.api.nvim_create_augroup("AutoProjectRoot", { clear = true })
 vim.api.nvim_create_autocmd("BufWinEnter", {
-    group = auto_root_group,
-    desc = "Set temporary local directory using vim.fs.root upon opening a file",
+    group = vim.api.nvim_create_augroup("AutoProjectRoot", { clear = true }),
+    desc = "Automatically update workspace directory",
     callback = function(args)
-        if vim.bo.buftype ~= "" then return end
-
-        local root = workspace.find_project_root(args.buf)
-
-        if root then
-            vim.cmd.lcd(root)
-        end
+        workspace.update(args.buf)
     end,
 })
