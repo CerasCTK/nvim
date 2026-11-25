@@ -142,6 +142,35 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
+    group = vim.api.nvim_create_augroup("TreesitterFolding", { clear = true }),
+    desc = "Enable Tree-sitter folding for supported filetypes",
+    callback = function(args)
+        local bufnr = args.buf
+
+        local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
+        if is_non_file_buffer then return end
+
+        local filetype = vim.bo[bufnr].filetype
+        local lang = vim.treesitter.language.get_lang(filetype)
+
+        if not lang then return end
+
+        local is_parser_available = vim.treesitter.language.add(lang)
+        if not is_parser_available then return end
+
+        local is_query_available, query = pcall(vim.treesitter.query.get, lang, "folds")
+        if not is_query_available or not query then return end
+
+        local windows = vim.fn.win_findbuf(bufnr)
+
+        for _, winid in ipairs(windows) do
+            vim.wo[winid][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.wo[winid][0].foldmethod = "expr"
+        end
+    end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("BetterDocument", { clear = true }),
     desc = "Configure text layout and enable spellcheck for prose and documentation files",

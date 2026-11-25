@@ -83,6 +83,5 @@ vim.opt.iskeyword:append("-")
 vim.opt.clipboard:append("unnamedplus")
 
 -- Folding
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldmethod = "manual"
 vim.opt.foldlevel = 99
