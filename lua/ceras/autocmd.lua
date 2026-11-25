@@ -72,10 +72,13 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
     group = vim.api.nvim_create_augroup("AutoRead", { clear = true }),
     desc = "Automatically reload buffers when file changes are detected on disk",
-    callback = function()
-        if vim.o.buftype ~= "nofile" then
-            vim.cmd("checktime")
-        end
+    callback = function(args)
+        local bufnr = args.buf
+
+        if vim.bo[bufnr].buftype ~= "" then return end
+        if vim.fn.getcmdtype() ~= "" then return end
+
+        vim.cmd("checktime")
     end,
 })
 
