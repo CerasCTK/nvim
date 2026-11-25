@@ -217,15 +217,3 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         end
     end,
 })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-    group = auto_root_group,
-    desc = "Override local directory with the absolute project root detected by the active LSP",
-    callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-        if client and client.root_dir then
-            vim.cmd.lcd(client.root_dir)
-        end
-    end,
-})
