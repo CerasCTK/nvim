@@ -4,15 +4,9 @@ if vim.fn.has("nvim-0.12") == 1 then
     vim.cmd.packadd("nvim.difftool")
 
     vim.cmd.packadd("nvim.undotree")
+    local undotree = require("ceras.core.undotree")
 
-    vim.keymap.set(
-        "n",
-        "<leader>eu",
-        function()
-            require("undotree").open({ title = "UndoTree" })
-        end,
-        { desc = "Toggle builtin Undotree" }
-    )
+    vim.keymap.set("n", "<leader>eu", undotree.open, { desc = "Toggle builtin Undotree" })
 
     vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("SetupUndoTree", { clear = true }),
@@ -24,7 +18,7 @@ if vim.fn.has("nvim-0.12") == 1 then
             vim.bo[bufnr].buflisted = false
             vim.opt_local.foldenable = false
 
-            vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = bufnr, desc = "Close UndoTree" })
+            vim.keymap.set("n", "q", undotree.cancel, { buffer = bufnr, desc = "Cancel undo selection and close UndoTree" })
         end,
     })
 end
