@@ -192,3 +192,5 @@ vim.keymap.set(
     end,
     { desc = "Yank to the last non-blank character of the line and cache cursor", expr = true }
 )
+
+vim.keymap.set("n", "<leader>pw", require("ceras.core.workspace").select_mode, { desc = "Select workspace mode" })

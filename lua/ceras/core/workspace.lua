@@ -2,6 +2,12 @@ local M = {}
 
 local default_mode = "auto"
 local supported_modes = { "auto", "git", "file", "manual" }
+local mode_descriptions = {
+    auto = "Nearest project root",
+    git = "Git repository root",
+    file = "Current file directory",
+    manual = "Disable automatic directory switching",
+}
 
 M.find_project_root = function(bufnr)
     local simple_patterns = { ".git", "package.json" }
@@ -80,6 +86,28 @@ M.set_mode = function(mode)
     vim.w.workspace_mode = mode
 
     M.update(vim.api.nvim_get_current_buf())
+end
+
+M.select_mode = function()
+    local winid = vim.api.nvim_get_current_win()
+
+    vim.ui.select(
+        supported_modes,
+        {
+            prompt = "Select workspace mode (current: " .. M.get_mode() .. ")",
+            format_item = function(mode)
+                return mode .. " - " .. mode_descriptions[mode]
+            end,
+        },
+        function(choice)
+            if not choice then return end
+            if not vim.api.nvim_win_is_valid(winid) then return end
+
+            vim.api.nvim_win_call(winid, function()
+                M.set_mode(choice)
+            end)
+        end
+    )
 end
 
 return M
