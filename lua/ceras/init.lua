@@ -1,9 +1,11 @@
-local sysname = vim.uv.os_uname().sysname
+local compat = require("ceras.environment.compat")
+
+local sysname = compat.uv.os_uname().sysname
 vim.g.is_windows = (sysname == "Windows_NT")
 vim.g.is_linux = (sysname == "Linux")
 vim.g.is_mac = (sysname == "Darwin")
 
-if vim.fn.has("nvim-0.12") == 1 then
+if compat.has("0.12") then
     local ok, ui2 = pcall(require, "vim._core.ui2")
 
     if ok then
