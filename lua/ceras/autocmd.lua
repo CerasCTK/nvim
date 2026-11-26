@@ -149,18 +149,29 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
     group = vim.api.nvim_create_augroup("TreesitterFolding", { clear = true }),
-    desc = "Enable Tree-sitter folding for supported filetypes",
+    desc = "Manage Tree-sitter folding for supported filetypes",
     callback = function(args)
         local bufnr = args.buf
+        local treesitter_foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
-        local lang = treesitter.get_supported_language(bufnr, "folds")
-        if not lang then return end
+        local lang, reason = treesitter.get_supported_language(bufnr, "folds")
+        if reason == "special_buffer" then return end
 
         local windows = vim.fn.win_findbuf(bufnr)
 
         for _, winid in ipairs(windows) do
-            vim.wo[winid][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-            vim.wo[winid][0].foldmethod = "expr"
+            local options = vim.wo[winid][0]
+
+            local has_default_folding = options.foldmethod == "manual" and options.foldexpr == "0"
+            local has_treesitter_folding = options.foldmethod == "expr" and options.foldexpr == treesitter_foldexpr
+
+            if lang and has_default_folding then
+                options.foldmethod = "expr"
+                options.foldexpr = treesitter_foldexpr
+            elseif not lang and has_treesitter_folding then
+                options.foldmethod = "manual"
+                options.foldexpr = "0"
+            end
         end
     end,
 })
