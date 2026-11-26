@@ -153,7 +153,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("BetterDocument", { clear = true }),
     desc = "Configure text layout and enable spellcheck for prose and documentation files",
-    pattern = { "markdown", "text", "plaintex", "gitcommit" },
+    pattern = { "markdown", "text", "plaintex", "gitcommit", "gitrebase" },
     callback = function()
         vim.opt_local.wrap = true
         vim.opt_local.linebreak = true
