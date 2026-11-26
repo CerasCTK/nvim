@@ -114,21 +114,36 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true }),
-    desc = "Enable Tree-sitter highlighting for supported filetypes",
+    desc = "Manage Tree-sitter highlighting for supported filetypes",
     callback = function(args)
         local bufnr = args.buf
 
-        local lang = treesitter.get_supported_language(bufnr, "highlights")
+        local lang, reason = treesitter.get_supported_language(bufnr, "highlights")
+        if reason == "special_buffer" then return end
+
+        local was_managed = vim.b[bufnr].ceras_treesitter_highlight == true
+
+        if was_managed then
+            vim.treesitter.stop(bufnr)
+            vim.b[bufnr].ceras_treesitter_highlight = nil
+        end
+
         if not lang then return end
 
         local is_ok, err = pcall(vim.treesitter.start, bufnr, lang)
 
-        if not is_ok then
-            vim.treesitter.stop(bufnr)
-            vim.bo[bufnr].syntax = vim.bo[bufnr].filetype
-
-            vim.notify(tostring(err), vim.log.levels.WARN, { title = "Tree-sitter" })
+        if is_ok then
+            vim.b[bufnr].ceras_treesitter_highlight = true
+            return
         end
+
+        vim.treesitter.stop(bufnr)
+
+        if vim.g.syntax_on == 1 and vim.bo[bufnr].syntax == "" then
+            vim.bo[bufnr].syntax = vim.bo[bufnr].filetype
+        end
+
+        vim.notify(tostring(err), vim.log.levels.WARN, { title = "Tree-sitter" })
     end,
 })
 

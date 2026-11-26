@@ -2,7 +2,7 @@ local M = {}
 
 M.get_supported_language = function(bufnr, query_type)
     local is_non_file_buffer = vim.bo[bufnr].buftype ~= ""
-    if is_non_file_buffer then return end
+    if is_non_file_buffer then return nil, "special_buffer" end
 
     local filetype = vim.bo[bufnr].filetype
     local lang = vim.treesitter.language.get_lang(filetype)
