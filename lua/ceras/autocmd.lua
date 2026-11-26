@@ -166,8 +166,8 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
             local has_treesitter_folding = options.foldmethod == "expr" and options.foldexpr == treesitter_foldexpr
 
             if lang and has_default_folding then
-                options.foldmethod = "expr"
                 options.foldexpr = treesitter_foldexpr
+                options.foldmethod = "expr"
             elseif not lang and has_treesitter_folding then
                 options.foldmethod = "manual"
                 options.foldexpr = "0"
