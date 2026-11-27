@@ -1,3 +1,4 @@
+local compat = require("ceras.environment.compat")
 local platform = require("ceras.environment.platform")
 local config = require("ceras.config")
 
@@ -14,6 +15,28 @@ local mode_descriptions = {
     manual = "Disable automatic directory switching",
 }
 
+local find_root = function(bufnr, matches)
+    local filename = vim.api.nvim_buf_get_name(bufnr)
+
+    if filename == "" then return nil end
+
+    filename = vim.fs.normalize(filename, { expand_env = false })
+
+    for path in vim.fs.parents(filename) do
+        if vim.fn.isdirectory(path) == 1 and matches(path) then
+            return path
+        end
+    end
+
+    return nil
+end
+
+local has_marker = function(path, marker)
+    local marker_path = path:gsub("/$", "") .. "/" .. marker
+
+    return compat.uv.fs_stat(marker_path) ~= nil
+end
+
 M.setup_editorconfig = function()
     require("editorconfig").properties.nvim_workspace_mode = function(_, value)
         local is_valid_mode = vim.tbl_contains(supported_modes, value)
@@ -25,10 +48,13 @@ M.setup_editorconfig = function()
 end
 
 M.find_project_root = function(bufnr)
-    local simple_patterns = { ".git", "package.json" }
-    local complex_patterns = { "build/compile_commands.json" }
+    local patterns = {
+        ".git",
+        "package.json",
+        "build/compile_commands.json",
+    }
 
-    local absolute_paths = { vim.fn.stdpath("config") }
+    local config_path = vim.fs.normalize(vim.fn.stdpath("config"))
 
     local parent_paths = { "~/.config" }
     if platform.is_windows then
@@ -37,24 +63,29 @@ M.find_project_root = function(bufnr)
         table.insert(parent_paths, "~/workspace")
     end
 
-    return vim.fs.root(bufnr, function(name, path)
-        return vim.iter(simple_patterns):any(function(pattern)
-            return pattern == name
-        end) or
-        vim.iter(complex_patterns):any(function(pattern_path)
-            return vim.uv.fs_stat(vim.fs.joinpath(path, vim.fs.normalize(pattern_path)))
-        end) or
-        vim.iter(absolute_paths):any(function(dir_path)
-            return vim.fs.normalize(dir_path) == path
-        end) or
-        vim.iter(parent_paths):any(function(parent_path)
-            return vim.fs.normalize(parent_path) == vim.fs.dirname(path)
-        end)
+    for index, path in ipairs(parent_paths) do
+        parent_paths[index] = vim.fs.normalize(path)
+    end
+
+    return find_root(bufnr, function(path)
+        for _, pattern in ipairs(patterns) do
+            if has_marker(path, pattern) then
+                return true
+            end
+        end
+
+        if path == config_path then
+            return true
+        end
+
+        return vim.tbl_contains(parent_paths, vim.fs.dirname(path))
     end)
 end
 
 M.find_git_root = function(bufnr)
-    return vim.fs.root(bufnr, ".git")
+    return find_root(bufnr, function(path)
+        return has_marker(path, ".git")
+    end)
 end
 
 M.get_file_directory = function(bufnr)
