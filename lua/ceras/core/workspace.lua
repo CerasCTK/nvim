@@ -1,3 +1,5 @@
+local platform = require("ceras.environment.platform")
+
 local M = {}
 
 local default_mode = "auto"
@@ -30,7 +32,7 @@ M.find_project_root = function(bufnr)
     local absolute_paths = { vim.fn.stdpath("config") }
 
     local parent_paths = { "~/.config" }
-    if vim.g.is_windows then
+    if platform.is_windows then
         table.insert(parent_paths, "~/Workspace")
     else
         table.insert(parent_paths, "~/workspace")
