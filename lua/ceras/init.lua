@@ -1,6 +1,7 @@
 local compat = require("ceras.environment.compat")
+local config = require("ceras.config")
 
-if compat.has("0.12") then
+if config.experimental.ui2 and compat.has("0.12") then
     local ok, ui2 = pcall(require, "vim._core.ui2")
 
     if ok then

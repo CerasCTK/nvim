@@ -1,8 +1,7 @@
 local platform = require("ceras.environment.platform")
+local config = require("ceras.config")
 
 local M = {}
-
-local default_mode = "auto"
 
 local supported_modes = { "auto", "git", "file", "manual" }
 local selectable_modes = vim.list_extend({ "inherit" }, supported_modes)
@@ -85,7 +84,7 @@ M.get_mode = function(bufnr)
 
     return vim.w.workspace_mode
         or M.get_project_mode(bufnr)
-        or default_mode
+        or config.workspace.default_mode
 end
 
 M.update = function(bufnr)
