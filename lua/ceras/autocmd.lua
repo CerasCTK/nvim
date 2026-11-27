@@ -1,11 +1,12 @@
 local workspace = require("ceras.core.workspace")
 local treesitter = require("ceras.core.treesitter")
+local compat = require("ceras.environment.compat")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("HighlightYank", { clear = true }),
     desc = "Highlight selected text when yanking",
     callback = function()
-        vim.hl.on_yank()
+        compat.highlight.on_yank()
     end,
 })
 
@@ -18,7 +19,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
         if has_uri_scheme then return end
 
-        local absolute_path = vim.uv.fs_realpath(path) or path
+        local absolute_path = compat.uv.fs_realpath(path) or path
         local parent_directory = vim.fn.fnamemodify(absolute_path, ":p:h")
 
         vim.fn.mkdir(parent_directory, "p")
