@@ -9,9 +9,6 @@ M.get_supported_language = function(bufnr, query_type)
 
     if not lang then return end
 
-    local is_parser_available = vim.treesitter.language.add(lang)
-    if not is_parser_available then return end
-
     local is_query_available, query = pcall(vim.treesitter.query.get, lang, query_type)
     if not is_query_available or not query then return end
 
